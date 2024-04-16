@@ -1,0 +1,14 @@
+version: "3.1"
+
+services:
+  mongors:
+    image: nabilnizom/mongo-rs-arm64
+    volumes:
+      - data:/data
+    ports:
+      - 27001:27001
+      - 27002:27002
+      - 27003:27003
+
+volumes:
+  data:
