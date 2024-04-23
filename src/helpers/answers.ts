@@ -26,7 +26,6 @@ export const getAnswer = async (userId: string, quizId: string) => {
   }
 
   return answer
-
 }
 
 export const createAnswer = async (input: any) => {

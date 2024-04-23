@@ -1,0 +1,109 @@
+{
+  "lang": "en",
+  "applicant": {
+    "name": "Alex Chun Yin",
+    "date_of_birth": "2023-12-19",
+    "religion": "Muslim",
+    "company_url": "www.yourcompany.com"
+  },
+  "averageTraitScore": [
+    {
+      "code": "pleasant_agreeable",
+      "score": 2.5
+    },
+    {
+      "code": "conscientiousness",
+      "score": 5
+    },
+    {
+      "code": "open_emotionally_stable",
+      "score": 7.5
+    },
+    {
+      "code": "visionary",
+      "score": 10
+    }
+  ],
+  "traits": [
+    {
+      "code": "AG",
+      "score": 1
+    },
+    {
+      "code": "AH",
+      "score": 2
+    },
+    {
+      "code": "AN",
+      "score": 3
+    },
+    {
+      "code": "AU",
+      "score": 4
+    },
+    {
+      "code": "CO",
+      "score": 5
+    },
+    {
+      "code": "DP",
+      "score": 6
+    },
+    {
+      "code": "EM",
+      "score": 7
+    },
+    {
+      "code": "EN",
+      "score": 8
+    },
+    {
+      "code": "ET",
+      "score": 9
+    },
+    {
+      "code": "IN",
+      "score": 10
+    },
+    {
+      "code": "IT",
+      "score": 1
+    },
+    {
+      "code": "IV",
+      "score": 3
+    },
+    {
+      "code": "LS",
+      "score": 10
+    },
+    {
+      "code": "NU",
+      "score": 4
+    },
+    {
+      "code": "PR",
+      "score": 6
+    },
+    {
+      "code": "SC",
+      "score": 5
+    },
+    {
+      "code": "SF",
+      "score": 8
+    },
+    {
+      "code": "SP",
+      "score": 7
+    },
+    {
+      "code": "ST",
+      "score": 10
+    },
+    {
+      "code": "VT",
+      "score": 9
+    }
+  ]
+}
