@@ -11,12 +11,14 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
+    "antd": "^5.16.2",
     "mongodb": "^6.5.0",
     "next": "14.2.1",
     "react": "^18",
     "react-dom": "^18",
     "uuid": "^9.0.1",
-    "zod": "^3.22.4"
+    "zod": "^3.22.4",
+    "zustand": "^4.5.2"
   },
   "devDependencies": {
     "@jest/globals": "^29.7.0",

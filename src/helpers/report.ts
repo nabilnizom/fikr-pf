@@ -1,15 +1,52 @@
 "use server"
 
+import config from "@components/config"
 import { getQuiz } from "@components/helpers/quiz"
 import { z } from "zod"
 
-export const fetchReportInputValidation = async (input: any) => {
-  const schema = z.object({
-    userId: z.string().min(1),
-    quizId: z.string().min(1)
-  })
+export enum Traits {
+  AG = 'AG',
+  AH = 'AH',
+  AN = 'AN',
+  AU = 'AU',
+  CO = 'CO',
+  DP = 'DP',
+  EM = 'EM',
+  EN = 'EN',
+  IN = 'IN',
+  IT = 'IT',
+  IV = 'IV',
+  IS = 'IS',
+  NU = 'NU',
+  PR = 'PR',
+  SC = 'SC',
+  SF = 'SF',
+  SP = 'SP',
+  ST = 'ST',
+  VT = 'VT',
+}
 
-  return schema.parse(input)
+export const fetchReportInputValidation = async (input: any) => {
+  const traitScoreSchema = z.object({
+    code: z.string(),
+    score: z.number(),
+  })
+  
+  const applicantSchema = z.object({
+    name: z.string(),
+    date_of_birth: z.string(),
+    religion: z.string(),
+    company_url: z.string(),
+  })
+  
+  const pdfSchema = z.object({
+    lang: z.string(),
+    applicant: applicantSchema,
+    averageTraitScore: z.array(traitScoreSchema),
+    traits: z.array(traitScoreSchema),
+  })
+  
+  return pdfSchema.parse(input)
 }
 
 export const calculateAnswerPoints = async (answerInput: any) => {
@@ -28,26 +65,38 @@ export const calculateAnswerPoints = async (answerInput: any) => {
 
     return acc
   }, {
-    AG: 0,
-    AH: 0,
-    AN: 0,
-    AU: 0,
-    CO: 0,
-    DP: 0,
-    EM: 0,
-    EN: 0,
-    IN: 0,
-    IT: 0,
-    IV: 0,
-    LS: 0,
-    NU: 0,
-    PR: 0,
-    SC: 0,
-    SF: 0,
-    SP: 0,
-    ST: 0,
-    VT: 0
+    [Traits.AG]: 0,
+    [Traits.AH]: 0,
+    [Traits.AN]: 0,
+    [Traits.AU]: 0,
+    [Traits.CO]: 0,
+    [Traits.DP]: 0,
+    [Traits.EM]: 0,
+    [Traits.EN]: 0,
+    [Traits.IN]: 0,
+    [Traits.IT]: 0,
+    [Traits.IV]: 0,
+    [Traits.IS]: 0,
+    [Traits.NU]: 0,
+    [Traits.PR]: 0,
+    [Traits.SC]: 0,
+    [Traits.SF]: 0,
+    [Traits.SP]: 0,
+    [Traits.ST]: 0,
+    [Traits.VT]: 0
   })
 
   return traits
+}
+
+export const fetchReport = async (input: any) => {
+  const validated = await fetchReportInputValidation(input)
+
+  const res = await fetch(config.pdfGen.url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(validated)
+  })
 }

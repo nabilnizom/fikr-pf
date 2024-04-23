@@ -2,6 +2,7 @@
 
 import { insertData } from "@components/helpers/shared"
 import { getDbInstance } from "@components/utils/db"
+import { ObjectId } from "mongodb"
 import { z } from "zod"
 
 export interface User {
@@ -11,22 +12,21 @@ export interface User {
   productKey?: string
 }
 
-export const validateCreateUserInput = (input: any) => {
+export const validateCreateUserInput = async (input: any) => {
   const schema = z.object({
-    userId: z.string().min(1),
-    quizId: z.string().min(1),
-    answers: z.array(z.object({
-      questionNo: z.number(),
-      answer: z.boolean()
-    }))
+    name: z.string().min(1),
+    email: z.string().min(1),
+    idNum: z.string().min(1)
   })
 
   return schema.parse(input)
 }
 
-export const getUser = async (idNum: string) => {
+export const getUser = async ({_id, idNum}: {_id?: string, idNum?: string}) => {
+  if (!_id && !idNum) return { error: 'Invalid input' }
+
   const db = await getDbInstance()
-  const user = await db.collection('users').findOne({ idNum })
+  const user = _id ? await db.collection('users').findOne({ _id: new ObjectId(_id) }) : await db.collection('users').findOne({ idNum })
   if (!user) return { error: 'User not found' }
   return {
     ...user,
@@ -35,5 +35,12 @@ export const getUser = async (idNum: string) => {
 }
 
 export const createUser = async (input: any) => {
+  const db = await getDbInstance()
+  const user = await db.collection('users').findOne({ idNum: input.idNum })
+
+  if (user) {
+    return { error: 'User already exists' }
+  }
+
   return insertData('users', input, validateCreateUserInput)
 }
