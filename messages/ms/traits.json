@@ -1,0 +1,24 @@
+{
+  "Traits": {
+    "AG": "Agresif",
+    "AH": "Pencapaian",
+    "AN": "Analitikal",
+    "AU": "Autonomi",
+    "CO": "Mengawal",
+    "DP": "Bergantung",
+    "EM": "Emosi",
+    "EN": "Ketahanan",
+    "ET": "Ekstrovert",
+    "IN": "Intuisi",
+    "IS": "Skala Integriti",
+    "IT": "Intelektual",
+    "IV": "Introvert",
+    "NU": "Asuhan",
+    "PR": "Persepsi",
+    "SC": "Kritikan Diri",
+    "SF": "Konsep Diri",
+    "SP": "Sokongan",
+    "ST": "Struktur",
+    "VT": "Kepelbagaian"
+  }
+}

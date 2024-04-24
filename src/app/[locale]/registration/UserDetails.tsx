@@ -1,9 +1,8 @@
-import { createUser } from "@components/helpers/users"
-import { useIdsStore } from "@components/stores/ids"
-import { Button, Form, message } from "antd"
-import Card from "antd/es/card/Card"
-import Input from "antd/es/input/Input"
-import { useState } from "react"
+import { createUser } from '@components/helpers/users'
+import { useIdsStore } from '@components/stores/ids'
+import { Button, Form, message } from 'antd'
+import Card from 'antd/es/card/Card'
+import Input from 'antd/es/input/Input'
 
 const UserDetails = () => {
   const { setUserId } = useIdsStore()
@@ -17,9 +16,9 @@ const UserDetails = () => {
     }
 
     try {
-      const res: any = await createUser({...values})
+      const res: any = await createUser({ ...values })
       if (!res || res.error) {
-       throw new Error(res.error || 'Failed to create user')
+        throw new Error(res.error || 'Failed to create user')
       }
       setUserId(res.insertedId)
     } catch (error: any) {
@@ -35,20 +34,22 @@ const UserDetails = () => {
   }
 
   return (
-    <Card title="Registration" style={{ width: 650 }}>
+    <Card title='Registration' style={{ width: 650 }}>
       <Form form={form} wrapperCol={{ span: 24 }} labelCol={{ span: 4 }}>
-        <Form.Item name="name" label="Name">
+        <Form.Item name='name' label='Name'>
           <Input />
         </Form.Item>
-        <Form.Item name="email" label="Email">
+        <Form.Item name='email' label='Email'>
           <Input />
         </Form.Item>
-        <Form.Item name="idNum" label="ID Number">
+        <Form.Item name='idNum' label='ID Number'>
           <Input />
         </Form.Item>
       </Form>
-      <div className="w-full flex justify-center">
-        <Button type="primary" className="mx-auto" onClick={handleSubmit}>Submit</Button>
+      <div className='w-full flex justify-center'>
+        <Button type='primary' className='mx-auto' onClick={handleSubmit}>
+          Submit
+        </Button>
       </div>
     </Card>
   )

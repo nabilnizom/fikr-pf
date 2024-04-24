@@ -1,0 +1,24 @@
+{
+  "Traits": {
+    "AG": "Aggressive",
+    "AH": "Achievement",
+    "AN": "Analytical",
+    "AU": "Autonomy",
+    "CO": "Control",
+    "DP": "Dependent",
+    "EM": "Emotional",
+    "EN": "Endurance",
+    "ET": "Extrovert",
+    "IN": "Intuition",
+    "IS": "Integrity Scale",
+    "IT": "Intellectual",
+    "IV": "Introvert",
+    "NU": "Nurturance",
+    "PR": "Perceivers",
+    "SC": "Self-Cricism",
+    "SF": "Self-Conceptual",
+    "SP": "Support",
+    "ST": "Structure",
+    "VT": "Variety"
+  }
+}

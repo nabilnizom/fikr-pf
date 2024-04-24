@@ -1,9 +1,9 @@
 'use client'
 
-import AddProductKeyForm from "@components/app/report/AddProductKey"
-import { getUser } from "@components/helpers/users"
-import { useIdsStore } from "@components/stores/ids"
-import { useEffect, useState } from "react"
+import AddProductKeyForm from '@components/app/[locale]/report/AddProductKey'
+import { getUser } from '@components/helpers/users'
+import { useIdsStore } from '@components/stores/ids'
+import { useEffect, useState } from 'react'
 
 const ReportPage = () => {
   const { userId, productKey, setProductKey } = useIdsStore()
@@ -11,7 +11,7 @@ const ReportPage = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const user = await getUser({_id: userId})
+      const user = await getUser({ _id: userId })
       if (user.error) {
         console.log(user.error)
         return
@@ -35,10 +35,7 @@ const ReportPage = () => {
     return <AddProductKeyForm />
   }
 
-  return (
-    <div>
-    </div>
-  )
+  return <div></div>
 }
 
 export default ReportPage
