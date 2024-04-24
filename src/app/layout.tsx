@@ -1,24 +1,26 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import { Suspense } from "react";
+import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
+import './globals.css'
+import { Suspense } from 'react'
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: "Potential Forge"
-};
+  title: 'Potential Forge',
+}
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+  params: { locale },
+}: {
+  children: React.ReactNode
+  params: { locale: string }
+}) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
+    <html lang={locale}>
+      <body className={`${inter.className} bg-slate-200`}>
         <Suspense fallback={<>Loading..</>}>{children}</Suspense>
       </body>
     </html>
-  );
+  )
 }
