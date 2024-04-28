@@ -1,30 +1,11 @@
 "use server"
 
-import config from "@components/config"
-import { getQuiz } from "@components/helpers/quiz"
+import { ObjectId } from "mongodb"
+import { getDbInstance } from "@components/utils/db"
+// import puppeteer from "puppeteer/src/puppeteer.js"
 import { z } from "zod"
+import { Traits } from "./enums"
 
-export enum Traits {
-  AG = 'AG',
-  AH = 'AH',
-  AN = 'AN',
-  AU = 'AU',
-  CO = 'CO',
-  DP = 'DP',
-  EM = 'EM',
-  EN = 'EN',
-  IN = 'IN',
-  IT = 'IT',
-  IV = 'IV',
-  IS = 'IS',
-  NU = 'NU',
-  PR = 'PR',
-  SC = 'SC',
-  SF = 'SF',
-  SP = 'SP',
-  ST = 'ST',
-  VT = 'VT',
-}
 
 export const fetchReportInputValidation = async (input: any) => {
   const traitScoreSchema = z.object({
@@ -35,8 +16,7 @@ export const fetchReportInputValidation = async (input: any) => {
   const applicantSchema = z.object({
     name: z.string(),
     date_of_birth: z.string(),
-    religion: z.string(),
-    company_url: z.string(),
+    religion: z.string()
   })
   
   const pdfSchema = z.object({
@@ -49,19 +29,13 @@ export const fetchReportInputValidation = async (input: any) => {
   return pdfSchema.parse(input)
 }
 
-export const calculateAnswerPoints = async (answerInput: any) => {
-  const quiz = await getQuiz(answerInput.quizId)
-  const traits = answerInput.answers?.reduce((acc: any, { questionNo, answer }: { questionNo: number, answer: boolean}) => {
-    const question = quiz.questions.find((question: any) => question.no === questionNo)
-    if (!question) {
-      throw new Error(`Question ${questionNo} not found`)
+export const calculateTraits = async (answerInput: any) => {
+  const traits = answerInput.answers?.reduce((acc: any, { trait, answer }: { trait: string, answer: boolean}) => {
+    if (!acc[trait] && acc[trait] !== 0) {
+      throw new Error(`Trait ${trait} not found`)
     }
 
-    if (!acc[question.trait]) {
-      throw new Error(`Trait ${question.trait} not found`)
-    }
-
-    acc[question.trait] += answer ? 1 : 0
+    acc[trait] += answer ? 1 : 0
 
     return acc
   }, {
@@ -89,14 +63,64 @@ export const calculateAnswerPoints = async (answerInput: any) => {
   return traits
 }
 
-export const fetchReport = async (input: any) => {
-  const validated = await fetchReportInputValidation(input)
+export const calculateAverageTraitScore = async (traits: any) => {
+  const pleasantAgreeable = (traits[Traits.DP] + traits[Traits.NU] + traits[Traits.EM]) / 3
+  const openEmotionallyStable = (traits[Traits.VT] + traits[Traits.IN] + traits[Traits.NU] + traits[Traits.AH] + traits[Traits.AN]) / 5
+  const conscientiousness = (traits[Traits.SP] + traits[Traits.ST] + traits[Traits.IT] + traits[Traits.AU] + traits[Traits.CO]) / 5
+  const visionary = (traits[Traits.EN] + traits[Traits.AG] + traits[Traits.PR] + traits[Traits.SF]) / 4
 
-  const res = await fetch(config.pdfGen.url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
+  return {
+    pleasantAgreeable,
+    openEmotionallyStable,
+    conscientiousness,
+    visionary
+  }
+}
+
+export const fetchReport = async (input: {userId: string, quizId: string}) => {
+  const db = await getDbInstance()
+  const { userId, quizId } = input
+
+  if (!userId || !quizId) {
+    return { error:'Invalid input' }
+  }
+
+  const user = await db.collection('users').findOne({ _id: new ObjectId(userId) })
+  const answer = await db.collection('answers').findOne({ userId, quizId })
+  
+  if (!answer) {
+    return { error: 'Answer not found' }
+  } else if (!user) {
+    return { error: 'User not found' }
+  }
+  
+  const traits = await calculateTraits(answer)
+  const formattedTraits = Object.keys(traits).map((trait) => ({ code: trait, score: traits[trait] }))
+  const {
+    pleasantAgreeable,
+    openEmotionallyStable,
+    conscientiousness,
+    visionary
+  } = await calculateAverageTraitScore(traits)
+
+  const averageTraitScore = [
+    { code: "pleasant_agreeable", score: pleasantAgreeable },
+    { code: "open_emotionally_stable", score: openEmotionallyStable },
+    { code: "conscientiousness", score: conscientiousness },
+    { code: "visionary", score: visionary }
+  ]
+
+  const body = {
+    lang: 'en',
+    applicant: {
+      name: user.name,
+      date_of_birth: user.dob.toDateString(),
+      religion: user.religion,
+      company_url: user.company_url
     },
-    body: JSON.stringify(validated)
-  })
+    averageTraitScore,
+    traits: formattedTraits
+  }
+
+  return body
 }

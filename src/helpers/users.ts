@@ -16,7 +16,9 @@ export const validateCreateUserInput = async (input: any) => {
   const schema = z.object({
     name: z.string().min(1),
     email: z.string().min(1),
-    idNum: z.string().min(1)
+    idNum: z.string().min(1),
+    dob: z.date(),
+    religion: z.string().min(1),
   })
 
   return schema.parse(input)

@@ -1,10 +1,10 @@
-"use client"
+'use client'
 
-import { createAnswer } from "@components/helpers/answers";
-import { Traits } from "@components/helpers/report";
-import { useIdsStore } from "@components/stores/ids";
-import { Button, Form, Radio, message } from "antd";
-import {  useState } from "react";
+import { createAnswer } from '@components/helpers/answers'
+import { Traits } from '@components/helpers/enums'
+import { useIdsStore } from '@components/stores/ids'
+import { Button, Form, Radio, message } from 'antd'
+import { useState } from 'react'
 
 const QuizPage = () => {
   const { userId, setAnswerId } = useIdsStore()
@@ -87,23 +87,23 @@ const QuizPage = () => {
     {
       question: 'Yes or no? VT',
       trait: Traits.VT,
-    }
+    },
   ]
 
   const handleSubmit = async () => {
     const values = form.getFieldsValue()
 
     const answers = new Array(200).fill({}).map((_, index) => ({
-      questionNo: index,
-      answer: values[`question-${index}`]
+      trait: DUMMY_QUESTIONS[index % DUMMY_QUESTIONS.length].trait,
+      answer: values[`question-${index}`],
     }))
 
     const input = {
       userId,
       quizId: 'Quiz101',
-      answers
+      answers,
     }
-    
+
     const res: any = await createAnswer({ ...input })
     if (!res || res.error) {
       message.error(res.error || 'Failed to submit answers')
@@ -118,10 +118,14 @@ const QuizPage = () => {
 
   const devModeSet = () => {
     setLoading(true)
-    form.setFieldsValue(new Array(200).fill(0).reduce((acc, _, index) => {
-      Math.random() > 0.5 ? acc[`question-${index}`] = false : acc[`question-${index}`] = true
-      return acc
-    }, {} as any))
+    form.setFieldsValue(
+      new Array(200).fill(0).reduce((acc, _, index) => {
+        Math.random() > 0.5
+          ? (acc[`question-${index}`] = false)
+          : (acc[`question-${index}`] = true)
+        return acc
+      }, {} as any)
+    )
   }
 
   const Questions = () => {
@@ -129,7 +133,12 @@ const QuizPage = () => {
     return Array.from({ length: max }, (_, i) => {
       const question = DUMMY_QUESTIONS[i % DUMMY_QUESTIONS.length].question
       return (
-        <Form.Item key={i} name={`question-${i}`} label={`${i + 1} - ${question}`} labelAlign='left'>
+        <Form.Item
+          key={i}
+          name={`question-${i}`}
+          label={`${i + 1} - ${question}`}
+          labelAlign='left'
+        >
           <Radio.Group optionType='button'>
             <Radio value={true}>Yes</Radio>
             <Radio value={false}>No</Radio>
@@ -140,21 +149,30 @@ const QuizPage = () => {
   }
 
   return (
-      <div className="p-10">
-        <span>{}</span>
-        <span className="text-lg mr-5">Quiz questions (each true will count as 3 points. All true = 10 points)</span>
-        <Button loading={loading} onClick={() => {
+    <div className='p-10'>
+      <span>{}</span>
+      <span className='text-lg mr-5'>
+        Quiz questions (each true will count as 3 points. All true = 10 points)
+      </span>
+      <Button
+        loading={loading}
+        onClick={() => {
           devModeSet()
           setLoading(false)
-        }}>Auto set</Button>
-        <div className="h-5"></div> {/* Spacer */}
-        <Form form={form} layout='vertical'>
-          <Questions />
-        </Form>
-        <div className="h-5"></div> {/* Spacer */}
-        <Button type="primary" onClick={handleSubmit}>Submit</Button>
-      </div>
+        }}
+      >
+        Auto set
+      </Button>
+      <div className='h-5'></div> {/* Spacer */}
+      <Form form={form} layout='vertical'>
+        <Questions />
+      </Form>
+      <div className='h-5'></div> {/* Spacer */}
+      <Button type='primary' onClick={handleSubmit}>
+        Submit
+      </Button>
+    </div>
   )
 }
 
-export default QuizPage;
+export default QuizPage

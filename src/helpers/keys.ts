@@ -2,7 +2,7 @@
 
 import { getClientInstance, getDbInstance } from "@components/utils/db"
 import { ObjectId } from "mongodb"
-import { v1 as uuidv1 } from "uuid"
+import { v4 as uuidv4 } from "uuid"
 
 export interface ProductKey {
   key: string
@@ -17,7 +17,7 @@ export const generateKeys = async (companyId: string, count: number) => {
 
   let keys: any = []
   for (let i = 0; i < count; i++) {
-    const newKey = uuidv1()
+    const newKey = uuidv4()
     keys.push(newKey)
   }
 
@@ -31,6 +31,9 @@ export const generateKeys = async (companyId: string, count: number) => {
         isUsed: false
       })
     }))
+
+    return { ok: true }
+    
   } catch (err) {
     console.error(err)
   }
@@ -63,7 +66,7 @@ export const assignKey = async (key: string, userId: string) => {
   return rtnObj
 }
 
-export const getKeys = async (companyId: string, showUsed = false) => {
+export const getKeys = async (companyId: string, showUsed?: boolean) => {
   const db = await getDbInstance()
 
   const query: any = { companyId }
