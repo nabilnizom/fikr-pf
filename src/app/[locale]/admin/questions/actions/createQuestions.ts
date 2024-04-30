@@ -1,6 +1,6 @@
 'use server'
 
-import { addQuestion } from '@components/helpers/quiz'
+import { addQuestion } from '@components/helpers/questions'
 import { z } from 'zod'
 
 const schema = z.object({
@@ -21,10 +21,13 @@ export async function createQuestions(formData: FormData) {
   // Return early if the form data is invalid
   if (!validatedFields.success) {
     return {
-      errors: validatedFields.error.flatten().fieldErrors,
+      res: null,
+      error: validatedFields.error.flatten().fieldErrors,
     }
   }
 
   // Mutate data
-  // addQuestion()
+  const res = await addQuestion(validatedFields.data)
+
+  return { res, error: null }
 }

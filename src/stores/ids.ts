@@ -3,6 +3,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
+
 interface IdsState {
   userId: string
   answerId: string
@@ -12,19 +13,24 @@ interface IdsState {
   setProductKey: (productKey: string) => void
 }
 
-const initialState: IdsState = {
-  userId: window?.localStorage?.getItem('Id-Store')
-    ? JSON.parse(localStorage.getItem('Id-Store') || '')?.state?.userId
-    : null,
-  answerId: window?.localStorage?.getItem('Id-Store')
-    ? JSON.parse(localStorage.getItem('Id-Store') || '')?.state?.answerId
-    : null,
-  productKey: window?.localStorage?.getItem('Id-Store')
-    ? JSON.parse(localStorage.getItem('Id-Store') || '')?.state?.productKey
-    : null,
-  setUserId: () => {},
-  setAnswerId: () => {},
-  setProductKey: () => {},
+let initialState: IdsState
+
+if (typeof window !== "undefined") {
+  initialState = {
+    userId: window?.localStorage?.getItem('Id-Store')
+      ? JSON.parse(localStorage.getItem('Id-Store') || '')?.state?.userId
+      : null,
+    answerId: window?.localStorage?.getItem('Id-Store')
+      ? JSON.parse(localStorage.getItem('Id-Store') || '')?.state?.answerId
+      : null,
+    productKey: window?.localStorage?.getItem('Id-Store')
+      ? JSON.parse(localStorage.getItem('Id-Store') || '')?.state?.productKey
+      : null,
+    setUserId: () => {},
+    setAnswerId: () => {},
+    setProductKey: () => {},
+  }
+  console.log("initialized")
 }
 
 export const useIdsStore = create<IdsState>()(

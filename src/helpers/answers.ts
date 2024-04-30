@@ -9,7 +9,7 @@ export const answerQuizInputValidation = (input: any) => {
     userId: z.string().min(1),
     quizId: z.string().min(1),
     answers: z.array(z.object({
-      questionNo: z.number(),
+      trait: z.string(),
       answer: z.boolean()
     }))
   })
