@@ -10,7 +10,7 @@ export interface ProductKey {
   isUsed: boolean
 }
 
-export const generateKeys = async (companyId: string, count: number) => {
+export const generateKeys = async (companyId: string, count: number, price = 0) => {
   if (!count || !companyId) {
     return new Response('Product Key count is required', { status: 400 })
   }
@@ -28,7 +28,8 @@ export const generateKeys = async (companyId: string, count: number) => {
       return db.collection('productKeys').insertOne({
         key,
         companyId,
-        isUsed: false
+        isUsed: false,
+        price
       })
     }))
 

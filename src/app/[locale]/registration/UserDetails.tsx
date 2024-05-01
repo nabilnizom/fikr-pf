@@ -6,7 +6,7 @@ import Input from 'antd/es/input/Input'
 import { PlusOutlined } from '@ant-design/icons'
 
 const UserDetails = () => {
-  const { setUserId } = useIdsStore()
+  const { setUserId, setProductKey, setAnswerId } = useIdsStore()
   const [form] = Form.useForm()
 
   const handleSubmit = async () => {
@@ -22,9 +22,26 @@ const UserDetails = () => {
         dob: new Date(values.dob),
       })
       if (!res || res.error) {
+        if (res.exist) {
+          setUserId(res.user._id)
+          setProductKey(res.user.productKey)
+          if (res.user.answer) {
+            setAnswerId(res.user.answer._id.toString())
+            setTimeout(() => {
+              window.location.href = '/quiz'
+            }, 1000)
+          }
+
+          message.success('User already exists')
+          setTimeout(() => {
+            window.location.href = '/quiz'
+          }, 1000)
+        }
         throw new Error(res.error || 'Failed to create user')
       }
       setUserId(res.insertedId)
+      setProductKey('')
+      setAnswerId('')
     } catch (error: any) {
       message.error(error.message)
       return

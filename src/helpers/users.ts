@@ -41,7 +41,9 @@ export const createUser = async (input: any) => {
   const user = await db.collection('users').findOne({ idNum: input.idNum })
 
   if (user) {
-    return { error: 'User already exists' }
+    const answer = await db.collection('answers').findOne({ userId: user._id.toString() })
+    if (answer) return { exist: true, error: 'User already exists', user: {...user, answer} }
+    return { exist: true, error: 'User already exists', user }
   }
 
   return insertData('users', input, validateCreateUserInput)
