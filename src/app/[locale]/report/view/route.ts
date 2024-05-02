@@ -1,5 +1,6 @@
 import { fetchReportInputValidation } from '@components/helpers/report'
-import type { NextApiRequest, NextApiResponse } from 'next'
+import { NextRequest, NextResponse } from 'next/server'
+
 const puppeteer = require('puppeteer')
 
 export async function POST(req: Request, res: Response) {
@@ -10,8 +11,7 @@ export async function POST(req: Request, res: Response) {
   return new Response(pdf)
 }
 
-export async function GET(req: NextApiRequest, res: NextApiResponse) {
-  res.status(200).json({ name: 'John Doe' })
+export async function GET(req: NextRequest, res: NextResponse) {
   return new Response('OK')
 }
 
