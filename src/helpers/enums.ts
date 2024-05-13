@@ -7,6 +7,7 @@ export enum Traits {
   DP = 'DP',
   EM = 'EM',
   EN = 'EN',
+  ET = 'ET',
   IN = 'IN',
   IT = 'IT',
   IV = 'IV',
