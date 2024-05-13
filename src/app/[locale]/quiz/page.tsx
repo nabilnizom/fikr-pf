@@ -1,102 +1,38 @@
 'use client'
 
 import { createAnswer } from '@components/helpers/answers'
-import { Traits } from '@components/helpers/enums'
+import { getQuestions } from '@components/helpers/questions'
 import { useIdsStore } from '@components/stores/ids'
 import { Button, Form, Radio, message } from 'antd'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 const QuizPage = () => {
   const { userId, setAnswerId } = useIdsStore()
   const [loading, setLoading] = useState(false)
   const [form] = Form.useForm()
 
-  const DUMMY_QUESTIONS = [
-    {
-      question: 'Yes or no? AG',
-      trait: Traits.AG,
-    },
-    {
-      question: 'Yes or no? AH',
-      trait: Traits.AH,
-    },
-    {
-      question: 'Yes or no? AN',
-      trait: Traits.AN,
-    },
-    {
-      question: 'Yes or no? AU',
-      trait: Traits.AU,
-    },
-    {
-      question: 'Yes or no? CO',
-      trait: Traits.CO,
-    },
-    {
-      question: 'Yes or no? DP',
-      trait: Traits.DP,
-    },
-    {
-      question: 'Yes or no? EM',
-      trait: Traits.EM,
-    },
-    {
-      question: 'Yes or no? EN',
-      trait: Traits.EN,
-    },
-    {
-      question: 'Yes or no? IN',
-      trait: Traits.IN,
-    },
-    {
-      question: 'Yes or no? IT',
-      trait: Traits.IT,
-    },
-    {
-      question: 'Yes or no? IV',
-      trait: Traits.IV,
-    },
-    {
-      question: 'Yes or no? IS',
-      trait: Traits.IS,
-    },
-    {
-      question: 'Yes or no? NU',
-      trait: Traits.NU,
-    },
-    {
-      question: 'Yes or no? PR',
-      trait: Traits.PR,
-    },
-    {
-      question: 'Yes or no? SC',
-      trait: Traits.SC,
-    },
-    {
-      question: 'Yes or no? SF',
-      trait: Traits.SF,
-    },
-    {
-      question: 'Yes or no? SP',
-      trait: Traits.SP,
-    },
-    {
-      question: 'Yes or no? ST',
-      trait: Traits.ST,
-    },
-    {
-      question: 'Yes or no? VT',
-      trait: Traits.VT,
-    },
-  ]
+  const [questions, setQuestions] = useState<any>([])
+
+  const fetchQuestions = async () => {
+    const res = await getQuestions()
+    setQuestions(res)
+  }
+
+  useEffect(() => {
+    fetchQuestions()
+  }, [])
+
+  if (!questions?.length) return <div>Loading...</div>
 
   const handleSubmit = async () => {
     const values = form.getFieldsValue()
-
-    const answers = new Array(200).fill({}).map((_, index) => ({
-      trait: DUMMY_QUESTIONS[index % DUMMY_QUESTIONS.length].trait,
-      answer: values[`question-${index}`],
-    }))
+    
+    const answers = Object.keys(values).map((key) => {
+      return {
+        trait: questions.find((q: any) => q._id === key).trait,
+        answer: values[key],
+      }
+    })
 
     const input = {
       userId,
@@ -119,24 +55,21 @@ const QuizPage = () => {
   const devModeSet = () => {
     setLoading(true)
     form.setFieldsValue(
-      new Array(200).fill(0).reduce((acc, _, index) => {
+      questions.reduce((acc: any, question: any, i: number) => {
         Math.random() > 0.5
-          ? (acc[`question-${index}`] = false)
-          : (acc[`question-${index}`] = true)
+          ? (acc[question._id] = true)
+          : (acc[question._id] = false)
         return acc
-      }, {} as any)
+      }, {})
     )
   }
 
   const Questions = () => {
-    const max = 200
-    return Array.from({ length: max }, (_, i) => {
-      const question = DUMMY_QUESTIONS[i % DUMMY_QUESTIONS.length].question
-      return (
+      return questions.map((question: any, i: number) => (
         <Form.Item
           key={i}
-          name={`question-${i}`}
-          label={`${i + 1} - ${question}`}
+          name={question._id}
+          label={`${i + 1} - ${question.question}`}
           labelAlign='left'
         >
           <Radio.Group optionType='button'>
@@ -144,8 +77,7 @@ const QuizPage = () => {
             <Radio value={false}>No</Radio>
           </Radio.Group>
         </Form.Item>
-      )
-    })
+      ))
   }
 
   return (
