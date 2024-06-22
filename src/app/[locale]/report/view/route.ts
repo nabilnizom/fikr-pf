@@ -4,7 +4,6 @@ import { NextRequest, NextResponse } from 'next/server'
 const puppeteer = require('puppeteer')
 
 export async function POST(req: Request, res: Response) {
-
   const bodyData = await req.json()
   const pdf = await printPDF(bodyData)
 
