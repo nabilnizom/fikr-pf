@@ -48,6 +48,7 @@ export const calculateTraits = async (answerInput: any) => {
       [Traits.DP]: 0,
       [Traits.EM]: 0,
       [Traits.EN]: 0,
+      [Traits.ET]: 0,
       [Traits.IN]: 0,
       [Traits.IT]: 0,
       [Traits.IV]: 0,
