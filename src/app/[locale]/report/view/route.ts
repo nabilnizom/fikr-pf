@@ -17,7 +17,10 @@ export async function GET(req: NextRequest, res: NextResponse) {
 async function printPDF(input: any) {
   const bodyData = await fetchReportInputValidation(input)
 
-  const browser = await puppeteer.launch({ headless: true })
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: ['--disable-dev-shm-usage'],
+  })
   const page = await browser.newPage()
 
   await page.setRequestInterception(true)
