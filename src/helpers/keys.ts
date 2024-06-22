@@ -1,8 +1,9 @@
-"use server"
+'use server'
 
-import { getClientInstance, getDbInstance } from "@components/utils/db"
-import { ObjectId } from "mongodb"
-import { v4 as uuidv4 } from "uuid"
+import appConfig from '@components/config'
+import { getClientInstance, getDbInstance } from '@components/utils/db'
+import { ObjectId } from 'mongodb'
+import { v4 as uuidv4 } from 'uuid'
 
 export interface ProductKey {
   key: string
@@ -10,7 +11,11 @@ export interface ProductKey {
   isUsed: boolean
 }
 
-export const generateKeys = async (companyId: string, count: number, price = 0) => {
+export const generateKeys = async (
+  companyId: string,
+  count: number,
+  price = 0
+) => {
   if (!count || !companyId) {
     return new Response('Product Key count is required', { status: 400 })
   }
@@ -24,17 +29,18 @@ export const generateKeys = async (companyId: string, count: number, price = 0) 
   const db = await getDbInstance()
 
   try {
-    await Promise.all(keys.map((key: string) => {
-      return db.collection('productKeys').insertOne({
-        key,
-        companyId,
-        isUsed: false,
-        price
+    await Promise.all(
+      keys.map((key: string) => {
+        return db.collection('productKeys').insertOne({
+          key,
+          companyId,
+          isUsed: false,
+          price,
+        })
       })
-    }))
+    )
 
     return { ok: true }
-    
   } catch (err) {
     console.error(err)
   }
@@ -42,20 +48,28 @@ export const generateKeys = async (companyId: string, count: number, price = 0) 
 
 export const assignKey = async (key: string, userId: string) => {
   const client = await getClientInstance()
-  const db = client.db('potentialforge')
+  const db = client.db(appConfig.mongo.db)
   const keyDoc = await db.collection('productKeys').findOne({ key })
-  
-  if (!keyDoc) return { error: 'Key not found'}
+
+  if (!keyDoc) return { error: 'Key not found' }
   if (keyDoc.isUsed) return { error: 'Key already used' }
-  
+
   const rtnObj: any = {}
   const session = client.startSession()
 
   try {
     await session.withTransaction(async () => {
       await Promise.all([
-        db.collection('productKeys').updateOne({ key }, { $set: { isUsed: true } }, { session }),
-        db.collection('users').updateOne({ _id: new ObjectId(userId) }, { $set: { productKey: key } }, { session })
+        db
+          .collection('productKeys')
+          .updateOne({ key }, { $set: { isUsed: true } }, { session }),
+        db
+          .collection('users')
+          .updateOne(
+            { _id: new ObjectId(userId) },
+            { $set: { productKey: key } },
+            { session }
+          ),
       ])
       rtnObj.ok = true
     })
