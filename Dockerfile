@@ -35,4 +35,5 @@ EXPOSE 3000
 
 ENV PORT 3000
 
+CMD ["npx", "puppeteer", "browsers", "install", "chrome"]
 CMD ["npm", "start"]
