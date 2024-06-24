@@ -3,24 +3,27 @@
   "applicant": {
     "name": "Alex Chun Yin",
     "date_of_birth": "2023-12-19",
-    "religion": "Muslim",
-    "company_url": "www.yourcompany.com"
+    "religion": "Muslim"
   },
   "averageTraitScore": [
     {
-      "code": "pleasant_agreeable",
+      "code": "adaptability",
       "score": 2.5
     },
     {
-      "code": "conscientiousness",
+      "code": "leadership_potential",
       "score": 5
     },
     {
-      "code": "open_emotionally_stable",
+      "code": "problem_solving",
       "score": 7.5
     },
     {
-      "code": "visionary",
+      "code": "resilience",
+      "score": 10
+    },
+    {
+      "code": "team_collaboration",
       "score": 10
     }
   ],
@@ -66,16 +69,16 @@
       "score": 10
     },
     {
+      "code": "IS",
+      "score": 10
+    },
+    {
       "code": "IT",
       "score": 1
     },
     {
       "code": "IV",
       "score": 3
-    },
-    {
-      "code": "LS",
-      "score": 10
     },
     {
       "code": "NU",
