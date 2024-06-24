@@ -19,7 +19,7 @@ async function printPDF(input: any) {
 
   const browser = await puppeteer.launch({
     headless: true,
-    args: ['--disable-dev-shm-usage'],
+    args: ['--disable-dev-shm-usage', '--no-sandbox'],
   })
   const page = await browser.newPage()
 
