@@ -1,3 +1,4 @@
+import appConfig from '@components/config'
 import { fetchReportInputValidation } from '@components/helpers/report'
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -15,35 +16,15 @@ export async function GET(req: NextRequest, res: NextResponse) {
 }
 
 async function printPDF(input: any) {
-  const bodyData = await fetchReportInputValidation(input)
-
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: ['--disable-dev-shm-usage', '--no-sandbox'],
-  })
-  const page = await browser.newPage()
-
-  await page.setRequestInterception(true)
-
-  page.once('request', (request: any) => {
-    var data = {
-      method: 'POST',
-      postData: JSON.stringify(bodyData),
-      headers: {
-        ...request.headers(),
-      },
-    }
-
-    request.continue(data)
-
-    page.setRequestInterception(false)
+  const res = await fetch(appConfig.pdfGen.url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(input),
   })
 
-  await page.goto('https://pdf.philipyong.com/src/index.php', {
-    waitUntil: 'networkidle0',
-  })
-  const pdf = await page.pdf({ format: 'A4' })
+  const pdf = await res.arrayBuffer()
 
-  await browser.close()
   return pdf
 }
